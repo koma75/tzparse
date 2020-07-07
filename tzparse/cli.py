@@ -33,7 +33,7 @@ from __future__ import absolute_import, division, print_function
 # Import the main click library
 import click
 # Import the sub-command implementations
-from tzparse.subcmd import subcmd
+from tzparse.tzdata import tzdata
 # Import the version information
 from tzparse.version import __version__
 
@@ -65,7 +65,7 @@ from tzparse.version import __version__
 @click.version_option(version=__version__)
 def cli(**kwargs):
     """IANA timezone database parser."""
-    subcmd.subcmd1(kwargs)
+    tzdata.parse(kwargs)
 
 # Entry point
 def main():

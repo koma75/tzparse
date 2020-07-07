@@ -69,7 +69,7 @@ def pout(msg=None, Verbose=0, level=Level.INFO, newline=True):
         pass
     click.echo(click.style(str(msg), fg=fg), nl=newline, err=error)
 
-def subcmd1(kwargs):
+def parse(kwargs):
     """subcmd sample 1"""
     verbosity = kwargs["verbose"]
     verbose = verbosity > 1
