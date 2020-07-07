@@ -71,12 +71,6 @@ def pout(msg=None, Verbose=0, level=Level.INFO, newline=True):
 
 def subcmd1(kwargs):
     """subcmd sample 1"""
-    # Copy images to sorted directories.
-    pout(kwargs, kwargs["verbose"], Level.DEBUG)
-    pass
-
-def subcmd2(kwargs):
-    """subcmd sample 2"""
     verbosity = kwargs["verbose"]
     verbose = verbosity > 1
     pout(kwargs, verbose, Level.DEBUG)

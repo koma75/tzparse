@@ -1,0 +1,10 @@
+zones: zone.tab
+countrylist: iso3166.tab
+tzdata:
+  - africa
+  - antarctica
+  - asia
+  - australasia
+  - europe
+  - northamerica
+  - southamerica

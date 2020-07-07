@@ -37,51 +37,35 @@ from tzparse.subcmd import subcmd
 # Import the version information
 from tzparse.version import __version__
 
-CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
-
-@click.group(context_settings=CONTEXT_SETTINGS)
-@click.version_option(version=__version__)
-def cli():
-    """sample cli tool"""
-    pass
-
-@cli.command()
-@click.argument('ARG')
+@click.command()
 @click.option(
-    '--flag', '-f', is_flag=True,
-    help='some flag option'
+    '--config', '-c', default="config.yml", type=str,
+    metavar='<cfg>',
+    help='Configuration File (default: config.yml)'
     )
 @click.option(
-    '--fmt', '-f', default="defaultvalue", type=str,
-    metavar='<fmt>',
-    help='string option'
+    '--tzdata', '-t', default="./tzdata/", type=str,
+    metavar='<tzdata>',
+    help='input tzdata folder (default: tzdata)'
+    )
+@click.option(
+    '--zones', '-z', default="./zones.csv", type=str,
+    metavar='<zones>',
+    help='zone csv output file (default: zones.csv)'
+    )
+@click.option(
+    '--rules', '-r', default="./rules.csv", type=str,
+    metavar='<rules>',
+    help='rule csv output file (default: rules.csv)'
     )
 @click.option(
     '--verbose', '-v', is_flag=True,
     help='output in verbose mode'
     )
-def subcmd1(**kwargs):
-    """sample subcmd"""
+@click.version_option(version=__version__)
+def cli(**kwargs):
+    """IANA timezone database parser."""
     subcmd.subcmd1(kwargs)
-
-@cli.command()
-@click.argument('ARG')
-@click.option(
-    '--message', '-m', multiple=True,
-    help='some flag option'
-    )
-@click.option(
-    '--choice', '-c', type=click.Choice(['choice1', 'choice2']),
-    help='choice option'
-    )
-@click.option(
-    '--verbose', '-v', count=True,
-    help='output in verbose mode'
-    )
-def subcmd2(**kwargs):
-    """sample subcmd"""
-    subcmd.subcmd2(kwargs)
-
 
 # Entry point
 def main():
