@@ -1,1 +1,1 @@
-__all__ = ['parse']
+__all__ = ['subcmd']
