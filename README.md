@@ -8,117 +8,54 @@ Installation
 ------------------------------------------------------------------------
 
 ~~~shell
-> pip install https://github.com/koma75/tzparse
+> pip install git+https://github.com/koma75/tzparse
 ~~~
 
 Usage
 ------------------------------------------------------------------------
 
-Design Concept
-------------------------------------------------------------------------
+### Preparation
 
-### Basics
+First, download the latest [IANA tzdata][IANA] from the link and extract
+the contents to some directory.
 
-The tool will read data from the [IANA tzdata][IANA] and output two CSV
-files.  One CSV should contain a merged list of time-zones with country
-names, timezone base offset, applied rule and the time-zone name.
-Another CSV should contain all the rules merged from the database.
+### Executing the command
 
-Country information in the database and the output of this tool is
-intended as an aid for users, to help them select time zone data
-appropriate for their practical needs.  It is not intended to take or
-endorse any position on legal or territorial claims.
+~~shell
+Usage: tzparse [OPTIONS] TZDIR
 
-### Input format
+  IANA timezone database parser.
 
-* zone1970.tab
-    * File containing the base list of time-zone and country.  Used as the
-        base of the output list
-    * The country code in the 1970 may be a comma separated list.
-        * In this case, the tool should repeat the same zone information
-          as separate entries with the listed countries.
-* iso3166.tab
-    * File containing the country code to country name conversion list.
-* definition files (file names with regions such as africa, asia etc.)
-    * File containing the actual time zone definitions with following tags.
-        * Zone
-        * Actual Zone definition.  Mostly multi-line.
-        * If multi-line, the final line should be used to get the latest
-            definition.
-        * linked rules are also included.
-        * Link
-        * Link definition to link a zone to another zone.
-        * Zone defined with this definition should refer to the linked zone
-        * Rule
-        * Definition of the daylight saving time rule.  refered frrom each zone
+Options:
+  -c, --config <cfg>   Configuration File (default: config.yml)
+  -z, --zones <zones>  zone csv output file (default: zones.csv)
+  -r, --rules <rules>  rule csv output file (default: rules.csv)
+  -o, --overwrite      overwrite output files (default: False)
+  -v, --verbose        output in verbose mode
+  --version            Show the version and exit.
+  --help               Show this message and exit.
+~~
 
-### Output format
+Prepare a config file that specify which files to read from
+the tzdata folder (example below), and specify the file using --config
+option.
 
-Two output files will be created
+~~yaml
+zones: zone1970.tab
+countrylist: iso3166.tab
+tzdata:
+  - africa
+  - antarctica
+  - asia
+  - australasia
+  - europe
+  - northamerica
+  - southamerica
+~~
 
-* zones.csv
-    * Country
-        * Country name derived from the iso3166.tab file
-        * e.g. Japan
-    * Zone
-        * Zone list obtained from zone.tab file
-        * e.g. Asia/Tokyo
-    * STDOFF
-        * Standard offset defined in each zone definition
-        * e.g. 9:00
-    * RULE
-        * Rule name linked to the zone.
-        * e.g. Japan
-* rules.csv
-    * Rule
-        * Name of the Rule
-    * FROM
-        * Date the rule is applied from
-        * e.g. 1982
-    * TO
-        * Date the rule is applied to
-        * e.g. 1983, only (same as FROM), max (MAX_INT)
-    * IN
-        * Month the switch rule is applied
-    * ON
-        * Date rule the switch is applied
-    * AT
-        * Time the switch happenes
-    * SAVE
-        * Hour offset applied at the timing
-
-### Process flow
-
-1. Parse the iso3166.tab file to get translation list for the country code
-   to country name.
-    * Hold the translation data in a Key-Value data.
-2. Parse all zone list file for all Zones
-    * Hold the Zone information data with Key=Zone name and Value containing all other Zone definition.
-3. Parse all zone list file for all Links
-    * Copy the Zone information of the linked zone to the defined zone.
-    * Links are always after the original Zone def. so can be parsed in one flow
-4. Parse all zone list file for all Rules and create rules.csv file
-    * Can be parsed along with Zones and links
-5. Parse Zone.tab and construct the zones.csv file
-
-Input to the Program should include following:
-
-* Folder path containing the tzdata files
-* List of zone data file names to read the zone information
-    * africa
-    * antarctica
-    * asia
-    * australasia
-    * backward
-        * not needed.  only used to link old zone names to current ones.
-    * backzone
-        * unnecessary?
-    * etcetera
-        * not needed. mostly common names like GMT UTC etc.
-    * europe
-    * northamerica
-    * pacificnew
-        * Probably not needed
-    * southamerica
+Execute the command by specifying the directory which you downloaded
+earlier.
+TZDIR argument and the --config option is mandatory.
+Other options may be specified to change certain operations.
 
 [IANA]:https://www.iana.org/time-zones
