@@ -1,4 +1,4 @@
-zones: zone.tab
+zones: zone1970.tab
 countrylist: iso3166.tab
 tzdata:
   - africa
