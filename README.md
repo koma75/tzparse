@@ -24,16 +24,23 @@ files.  One CSV should contain a merged list of time-zones with country
 names, timezone base offset, applied rule and the time-zone name.
 Another CSV should contain all the rules merged from the database.
 
+Country information in the database and the output of this tool is
+intended as an aid for users, to help them select time zone data
+appropriate for their practical needs.  It is not intended to take or
+endorse any position on legal or territorial claims.
+
 ### Input format
 
-* zone.tab
+* zone1970.tab
     * File containing the base list of time-zone and country.  Used as the
         base of the output list
+    * The country code in the 1970 may be a comma separated list.
+        * In this case, the tool should repeat the same zone information
+          as separate entries with the listed countries.
 * iso3166.tab
     * File containing the country code to country name conversion list.
 * definition files (file names with regions such as africa, asia etc.)
-    * File containing the actual time zone definitions with following 
-        tags.
+    * File containing the actual time zone definitions with following tags.
         * Zone
         * Actual Zone definition.  Mostly multi-line.
         * If multi-line, the final line should be used to get the latest

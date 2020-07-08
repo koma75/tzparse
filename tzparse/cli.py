@@ -39,27 +39,33 @@ from tzparse.version import __version__
 
 @click.command()
 @click.option(
-    '--config', '-c', default="config.yml", type=str,
+    '--config', '-c', default="config.yml",
+    type=click.File(mode='r'),
     metavar='<cfg>',
     help='Configuration File (default: config.yml)'
     )
+@click.argument(
+    'tzdir',
+    type=click.Path(exists=True, file_okay=False, readable=True, resolve_path=True),
+)
 @click.option(
-    '--tzdata', '-t', default="./tzdata/", type=str,
-    metavar='<tzdata>',
-    help='input tzdata folder (default: tzdata)'
-    )
-@click.option(
-    '--zones', '-z', default="./zones.csv", type=str,
+    '--zones', '-z', default="./zones.csv",
+    type=click.Path(exists=False, dir_okay=False, writable=True, resolve_path=True),
     metavar='<zones>',
     help='zone csv output file (default: zones.csv)'
     )
 @click.option(
-    '--rules', '-r', default="./rules.csv", type=str,
+    '--rules', '-r', default="./rules.csv",
+    type=click.Path(exists=False, dir_okay=False, writable=True, resolve_path=True),
     metavar='<rules>',
     help='rule csv output file (default: rules.csv)'
     )
 @click.option(
-    '--verbose', '-v', is_flag=True,
+    '--overwrite', '-o', is_flag=True,
+    help='overwrite output files (default: False)'
+)
+@click.option(
+    '--verbose', '-v', count=True,
     help='output in verbose mode'
     )
 @click.version_option(version=__version__)
