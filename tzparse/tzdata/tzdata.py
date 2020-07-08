@@ -108,7 +108,7 @@ def getCountry(isoFile, tzdir, verbose):
     """
     fpath = os.path.join(tzdir, isoFile)
     pout("processing {path}".format(path=fpath), verbose, Level.DEBUG)
-    with open(fpath) as fp:
+    with open(fpath, encoding="utf-8") as fp:
         rdr = csv.reader(filter(lambda row: row[0]!='#', fp), delimiter='\t')
         countryList = {}
         for row in rdr:
@@ -129,7 +129,7 @@ def getZones(zoneFile, tzdir, clist, verbose):
     """
     fpath = os.path.join(tzdir, zoneFile)
     pout("processing {path}".format(path=fpath), verbose, Level.DEBUG)
-    with open(fpath) as fp:
+    with open(fpath, encoding="utf-8") as fp:
         rdr = csv.reader(filter(lambda row: row[0]!='#', fp), delimiter='\t')
         zoneList = {}
         for row in rdr:
@@ -200,7 +200,7 @@ def parseTZDB(fpath, verbose):
     zlinks = {}
     rules = []
     pout("parseTZDB: {path}".format(path=fpath), verbose, Level.INFO)
-    with click.open_file(fpath, 'r') as db:
+    with click.open_file(fpath, 'r', encoding="utf-8") as db:
         line = db.readline()
         while line:
             # Strip comments and trailing spaces
@@ -289,7 +289,7 @@ def parse(kwargs):
 
     # 6.1 Output Rules
     try:
-        with click.open_file(kwargs['rules'], mode=fmode) as f:
+        with click.open_file(kwargs['rules'], mode=fmode, encoding="utf-8") as f:
             pout("writing {file}".format(file=kwargs['rules']), verbose, Level.INFO)
             writer = csv.writer(f, delimiter='\t')
             writer.writerow(["NAME","FROM","TO","TYPE","IN","ON","AT","SAVE","LETTER/S"])
@@ -304,7 +304,7 @@ def parse(kwargs):
 
     # 6.2 Output Time Zones
     try:
-        with click.open_file(kwargs['zones'], mode=fmode) as f:
+        with click.open_file(kwargs['zones'], mode=fmode, encoding="utf-8") as f:
             pout("writing {file}".format(file=kwargs['zones']), verbose, Level.INFO)
             writer = csv.writer(f, delimiter='\t')
             writer.writerow(["Country","Zone","STDOFF","Rule","Coordinate","Comment"])
