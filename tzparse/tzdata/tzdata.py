@@ -291,7 +291,7 @@ def parse(kwargs):
     try:
         with click.open_file(kwargs['rules'], mode=fmode, encoding="utf-8") as f:
             pout("writing {file}".format(file=kwargs['rules']), verbose, Level.INFO)
-            writer = csv.writer(f, delimiter='\t')
+            writer = csv.writer(f, delimiter='\t', lineterminator='\n')
             writer.writerow(["NAME","FROM","TO","TYPE","IN","ON","AT","SAVE","LETTER/S"])
             for rule in rules:
                 rule.pop(0)
@@ -306,7 +306,7 @@ def parse(kwargs):
     try:
         with click.open_file(kwargs['zones'], mode=fmode, encoding="utf-8") as f:
             pout("writing {file}".format(file=kwargs['zones']), verbose, Level.INFO)
-            writer = csv.writer(f, delimiter='\t')
+            writer = csv.writer(f, delimiter='\t', lineterminator='\n')
             writer.writerow(["Country","Zone","STDOFF","Rule","Coordinate","Comment"])
             for zone in zlist:
                 for country in zlist[zone]["Countries"]:
