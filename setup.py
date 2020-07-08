@@ -71,7 +71,7 @@ setup(
         ),
 
     # add your package requirements
-    install_requires=['click>=7,<8', 'colorama>=0.4,<0.5'],
+    install_requires=['click>=7,<8', 'colorama>=0.4,<0.5', 'pyyaml>=5,<6'],
 
     entry_points={
         'console_scripts': [
