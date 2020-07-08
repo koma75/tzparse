@@ -21,7 +21,7 @@ the contents to some directory.
 
 ### Executing the command
 
-~~shell
+~~~shell
 Usage: tzparse [OPTIONS] TZDIR
 
   IANA timezone database parser.
@@ -34,13 +34,13 @@ Options:
   -v, --verbose        output in verbose mode
   --version            Show the version and exit.
   --help               Show this message and exit.
-~~
+~~~
 
 Prepare a config file that specify which files to read from
 the tzdata folder (example below), and specify the file using --config
 option.
 
-~~yaml
+~~~yaml
 zones: zone1970.tab
 countrylist: iso3166.tab
 tzdata:
@@ -51,7 +51,7 @@ tzdata:
   - europe
   - northamerica
   - southamerica
-~~
+~~~
 
 Execute the command by specifying the directory which you downloaded
 earlier.
