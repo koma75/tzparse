@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""exif sort implementation"""
+"""tzdata implementation"""
 
 # BSD 2-Clause License
 #
@@ -74,27 +74,6 @@ def pout(msg=None, Verbose=0, level=Level.INFO, newline=True):
         pass
     click.echo(click.style(str(msg), fg=fg), nl=newline, err=error)
 
-"""
-input data sample reference
-kwargs sample
-{   'config': <_io.TextIOWrapper name='config.yml' mode='r' encoding='UTF-8'>,
-    'overwrite': False,
-    'rules': '/path/to/working/dir/rules.csv',
-    'tzdir': '/path/to/workinng/dir/tzdb-2020a',
-    'verbose': 2,
-    'zones': '/path/to/working/dir/zones.csv'}
-config file sample
-{   'countrylist': 'iso3166.tab',
-    'tzdata': [   'africa',
-                  'antarctica',
-                  'asia',
-                  'australasia',
-                  'europe',
-                  'northamerica',
-                  'southamerica'],
-    'zones': 'zone1970.tab'}
-"""
-
 def getCountry(isoFile, tzdir, verbose):
     """Get the dictionary containing the iso3166 country code to name conversion
 
@@ -147,6 +126,15 @@ def getZones(zoneFile, tzdir, clist, verbose):
     return zoneList
 
 def parseZone(lines, verbose):
+    """Parse the Zone entry in the database.
+
+    Args:
+        lines (Array): Array containing the lines for a single Zone entry
+        verbose (Int): verbosity mode
+
+    Returns:
+        Dict: zinfo data
+    """
     pout("parseZone: {l}".format(l = lines), verbose, Level.DEBUG)
     #pout(lines, verbose, Level.DEBUG)
     firstLine = lines.pop(0)
@@ -167,11 +155,16 @@ def parseZone(lines, verbose):
     pout(zinfo, verbose, Level.DEBUG)
     return zinfo
 
-#Link LNKTGT LNKSRC
-#Link Asia/Bangkok Asia/Phnom_Penh	# Cambodia
-#Link Asia/Bangkok Asia/Vientiane	# Laos
-
 def parseLink(line, verbose):
+    """Parse the Link entry in the database.
+
+    Args:
+        line (Str): line containing a single Link entry
+        verbose (Int): verbosity mode
+
+    Returns:
+        Dict: zlink
+    """
     line = re.split(r'[\t ]', line)
     pout("parseLink: {l}".format(l=line), verbose, Level.DEBUG)
     zlink = {
@@ -180,11 +173,31 @@ def parseLink(line, verbose):
     return zlink
 
 def parseRule(line, verbose):
+    """Parse the Rule entry in the database.
+
+    Args:
+        line (Str): line containing a single Rule entry
+        verbose (Int): verbosity mode
+
+    Returns:
+        Array: parsed rule data
+    """
     pout("parseRule: {l}".format(l=line), verbose, Level.DEBUG)
     rule = line.split()
     return rule
 
 def expandLink(linkSrc, linkDst, zinfos, verbose):
+    """expand the link to a full zone info
+
+    Args:
+        linkSrc (Str): timezone name of source
+        linkDst (Str): timezone name of link dest
+        zinfos (Dict): timezone database structure to copy data from
+        verbose (Int): verbosity mode
+
+    Returns:
+        Dict: zone information data
+    """
     pout("expanding: {src} -> {dst}".format(src=linkSrc, dst=linkDst), verbose, Level.DEBUG)
     zinfo = {
         linkSrc: {
@@ -196,6 +209,17 @@ def expandLink(linkSrc, linkDst, zinfos, verbose):
     return zinfo
 
 def parseTZDB(fpath, verbose):
+    """Parse a single Timezone Database file.
+    zinfos contains the parsed timezone information.
+    rules contains the parsed rules.
+
+    Args:
+        fpath (Str): file path to the database file
+        verbose (Int): verbosity mode
+
+    Returns:
+        Tuple: returns (zinfos, rules)
+    """
     zinfos = {}
     zlinks = {}
     rules = []
@@ -232,6 +256,18 @@ def parseTZDB(fpath, verbose):
     return zinfos, rules
 
 def parseTZDBs(tzdbs, tzdir, verbose):
+    """Parse the list of timezone databases
+    zinfos contains the parsed timezone information.
+    rules contains the parsed rules.
+
+    Args:
+        tzdbs (Array): list of timezone database file paths
+        tzdir (Str): directory the database file is located
+        verbose (Int): verbosity mode
+
+    Returns:
+        Tuple: zinfos, rules
+    """
     zinfos = {}
     rules = []
     for db in tzdbs:
@@ -321,10 +357,7 @@ def parse(kwargs):
             pass
     except FileExistsError:
         pout("{file} already exists. use '-o' to overwrite".format(file=kwargs['zones']), verbose, Level.ERROR)
-    #except:
-    #    pout("Faild to write: {file}".format(file=kwargs['zones']), verbose, Level.ERROR)
-
-    # Rule	NAME	FROM	TO	TYPE	IN	ON	AT	SAVE	LETTER/S
-    # Rule	Syria	1920	1923	-	Apr	Sun>=15	2:00	1:00	S
+    except:
+        pout("Faild to write: {file}".format(file=kwargs['zones']), verbose, Level.ERROR)
 
     pass
