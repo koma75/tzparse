@@ -185,6 +185,7 @@ def parseRule(line, verbose):
     """
     pout("parseRule: {l}".format(l=line), verbose, Level.DEBUG)
     rule = line.split()
+    rule.pop(0)
     return rule
 
 def expandLink(linkSrc, linkDst, zinfos, verbose):
@@ -399,7 +400,6 @@ def parse(kwargs):
             writer = csv.writer(f, delimiter='\t', lineterminator='\n')
             writer.writerow(["NAME","FROM","TO","TYPE","IN","ON","AT","SAVE","LETTER/S"])
             for rule in rules:
-                rule.pop(0)
                 writer.writerow(rule)
             pass
     except FileExistsError:
