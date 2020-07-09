@@ -8,3 +8,7 @@ tzdata:
   - europe
   - northamerica
   - southamerica
+output:
+  zonecsv: zones.csv
+  rulescsv: rules.csv
+  tzdataxls: tzdata.xlsx

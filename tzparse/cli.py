@@ -39,8 +39,8 @@ from tzparse.version import __version__
 
 @click.command()
 @click.option(
-    '--config', '-c', default="config.yml",
-    type=click.File(mode='r'),
+    '--config', '-c', default="./config.yml",
+    type=click.Path(exists=False, dir_okay=False, writable=True, resolve_path=True),
     metavar='<cfg>',
     help='Configuration File (default: config.yml)'
     )
@@ -49,16 +49,22 @@ from tzparse.version import __version__
     type=click.Path(exists=True, file_okay=False, readable=True, resolve_path=True),
 )
 @click.option(
-    '--zones', '-z', default="./zones.csv",
+    '--zones', '-z',
     type=click.Path(exists=False, dir_okay=False, writable=True, resolve_path=True),
     metavar='<zones>',
-    help='zone csv output file (default: zones.csv)'
+    help='zone csv output file'
     )
 @click.option(
-    '--rules', '-r', default="./rules.csv",
+    '--rules', '-r',
     type=click.Path(exists=False, dir_okay=False, writable=True, resolve_path=True),
     metavar='<rules>',
-    help='rule csv output file (default: rules.csv)'
+    help='rule csv output file'
+    )
+@click.option(
+    '--xlsx', '-x',
+    type=click.Path(exists=False, dir_okay=False, writable=True, resolve_path=True),
+    metavar='<rules>',
+    help='timezone data xlsx output file'
     )
 @click.option(
     '--overwrite', '-o', is_flag=True,
@@ -93,6 +99,8 @@ def cli(**kwargs):
             zonecsv: zones.csv
             rulescsv: rules.csv
             tzdataxls: tzdata.xlsx
+
+    Command line options takes precedance over the command line option
     """
     tzdata.parse(kwargs)
 

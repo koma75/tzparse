@@ -68,10 +68,15 @@ setup(
 
     packages=find_packages(
         exclude=['dist', 'build', 'contrib', 'docs', 'tests']
-        ),
+    ),
 
     # add your package requirements
-    install_requires=['click>=7,<8', 'colorama>=0.4,<0.5', 'pyyaml>=5,<6'],
+    install_requires=[
+        'click>=7,<8',
+        'colorama>=0.4,<0.5',
+        'pyyaml>=5,<6',
+        'openpyxl>=3,<4'
+    ],
 
     entry_points={
         'console_scripts': [

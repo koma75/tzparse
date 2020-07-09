@@ -34,6 +34,7 @@ import yaml
 import csv
 import os
 import re
+import openpyxl
 from pprint import pformat
 import click
 
@@ -278,6 +279,33 @@ def parseTZDBs(tzdbs, tzdir, verbose):
 
     return zinfos, rules
 
+def createConf(conf, verbose):
+    try:
+        with click.open_file(conf, 'w', 'utf-8') as fd:
+            fd.writelines([
+                "zones: zone1970.tab\n",
+                "countrylist: iso3166.tab\n",
+                "tzdata:\n",
+                "  - africa\n",
+                "  - antarctica\n",
+                "  - asia\n",
+                "  - australasia\n",
+                "  - europe\n",
+                "  - northamerica\n",
+                "  - southamerica\n",
+                "output:\n",
+                "  zonecsv: zones.csv\n",
+                "  rulescsv: rules.csv\n",
+                "  tzdataxls: tzdata.xlsx\n",
+            ])
+    except:
+        pout("could not create {file}".format(file=conf), verbose, Level.ERROR)
+    pass
+
+def createWB(zlist, rules, verbose):
+    wb = openpyxl.Workbook()
+    return wb
+
 def parse(kwargs):
     """Parse the tz database files and emmit CSV
 
@@ -285,9 +313,29 @@ def parse(kwargs):
         kwargs (dict): command line arguments parsed by Click library
     """
     verbose = kwargs["verbose"]
-    pout(pformat(kwargs,depth=3,indent=4), verbose, Level.DEBUG)
+    pout("Command line arguments:", verbose, Level.INFO)
+    pout(pformat(kwargs,depth=3,indent=4), verbose, Level.INFO)
     # 0. Get information from config.yml
-    conf = yaml.safe_load(kwargs['config'])
+    # If file does not exist, create a default config file
+    if not os.path.exists(kwargs['config']):
+        createConf(kwargs['config'], verbose)
+    try:
+        with click.open_file(kwargs['config'], 'r') as cnf:
+            conf = yaml.safe_load(cnf)
+    except:
+        pout("could not open config file: {file}".format(file=kwargs['config']), verbose, Level.ERROR)
+
+    if kwargs['zones']:
+        conf['output']['zonecsv'] = kwargs['zones']
+        pass
+    if kwargs['rules']:
+        conf['output']['rulescsv'] = kwargs['rules']
+        pass
+    if kwargs['xlsx']:
+        conf['output']['tzdataxls'] = kwargs['xlsx']
+        pass
+
+    pout("Read config file:", verbose, Level.INFO)
     pout(pformat(conf,depth=3,indent=4), verbose, Level.INFO)
 
     # 1. Parse iso3166.tab file
@@ -317,16 +365,17 @@ def parse(kwargs):
     pout("-------Final Zone DB--------", verbose, Level.DEBUG)
     pout(pformat(zlist, depth=3,indent=4), verbose, Level.DEBUG)
 
-    # 6. output result to csv files
+    # 6. output results
     if kwargs["overwrite"]:
         fmode = 'w'
     else:
         fmode = 'x'
 
     # 6.1 Output Rules
+    fpath = conf['output']['rulescsv']
     try:
-        with click.open_file(kwargs['rules'], mode=fmode, encoding="utf-8") as f:
-            pout("writing {file}".format(file=kwargs['rules']), verbose, Level.INFO)
+        with click.open_file(fpath , mode=fmode, encoding="utf-8") as f:
+            pout("writing {file}".format(file=fpath), verbose, Level.INFO)
             writer = csv.writer(f, delimiter='\t', lineterminator='\n')
             writer.writerow(["NAME","FROM","TO","TYPE","IN","ON","AT","SAVE","LETTER/S"])
             for rule in rules:
@@ -334,14 +383,15 @@ def parse(kwargs):
                 writer.writerow(rule)
             pass
     except FileExistsError:
-        pout("{file} already exists. use '-o' to overwrite".format(file=kwargs['rules']), verbose, Level.ERROR)
+        pout("{file} already exists. use '-o' to overwrite".format(file=fpath), verbose, Level.ERROR)
     except:
-        pout("Failed to write {file}".format(file=kwargs['rules']), verbose, Level.ERROR)
+        pout("Failed to write {file}".format(file=fpath), verbose, Level.ERROR)
 
     # 6.2 Output Time Zones
+    fpath = conf['output']['zonecsv']
     try:
-        with click.open_file(kwargs['zones'], mode=fmode, encoding="utf-8") as f:
-            pout("writing {file}".format(file=kwargs['zones']), verbose, Level.INFO)
+        with click.open_file(fpath, mode=fmode, encoding="utf-8") as f:
+            pout("writing {file}".format(file=fpath), verbose, Level.INFO)
             writer = csv.writer(f, delimiter='\t', lineterminator='\n')
             writer.writerow(["Country","Zone","STDOFF","Rule","Coordinate","Comment"])
             for zone in zlist:
@@ -356,8 +406,12 @@ def parse(kwargs):
                     ])
             pass
     except FileExistsError:
-        pout("{file} already exists. use '-o' to overwrite".format(file=kwargs['zones']), verbose, Level.ERROR)
+        pout("{file} already exists. use '-o' to overwrite".format(file=fpath), verbose, Level.ERROR)
     except:
-        pout("Faild to write: {file}".format(file=kwargs['zones']), verbose, Level.ERROR)
+        pout("Faild to write: {file}".format(file=fpath), verbose, Level.ERROR)
+
+    # 6.3 Output Excel spreadsheet
+    wb = createWB(zlist, rules, verbose)
+    wb.save(conf['output']['tzdataxls'])
 
     pass

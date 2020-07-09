@@ -1,1 +1,1 @@
-__all__ = ['subcmd']
+__all__ = ['tzdata']

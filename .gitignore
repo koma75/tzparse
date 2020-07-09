@@ -132,3 +132,4 @@ dmypy.json
 .pyre/
 rules.csv
 zones.csv
+tzdata.xlsx
