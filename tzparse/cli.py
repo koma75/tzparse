@@ -70,7 +70,30 @@ from tzparse.version import __version__
     )
 @click.version_option(version=__version__)
 def cli(**kwargs):
-    """IANA timezone database parser."""
+    """IANA timezone database parser.
+    Parse data available at https://www.iana.org/time-zones
+
+    Download tzdataXXXX.tar.gz file and extract contents to parse.
+
+    Config file must be provided to define input files.
+    See example config.yml below:
+
+    \b
+        zones: zone1970.tab
+        countrylist: iso3166.tab
+        tzdata:
+            - africa
+            - antarctica
+            - asia
+            - australasia
+            - europe
+            - northamerica
+            - southamerica
+        output:
+            zonecsv: zones.csv
+            rulescsv: rules.csv
+            tzdataxls: tzdata.xlsx
+    """
     tzdata.parse(kwargs)
 
 # Entry point
