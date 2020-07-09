@@ -304,6 +304,26 @@ def createConf(conf, verbose):
 
 def createWB(zlist, rules, verbose):
     wb = openpyxl.Workbook()
+
+    ws = wb.active
+    ws.append(["Country","Zone","STDOFF","Rule","Coordinate","Comment"])
+    ws.title = "Time Zones"
+    for zone in zlist:
+        for country in zlist[zone]["Countries"]:
+            ws.append([
+                country,
+                zone,
+                zlist[zone]["STDOFF"],
+                zlist[zone]["Rule"],
+                zlist[zone]["Coord"],
+                zlist[zone]["Comment"]
+            ])
+
+    ws2 = wb.create_sheet("Rules", 1)
+    ws2.append(["NAME","FROM","TO","TYPE","IN","ON","AT","SAVE","LETTER/S"])
+    for rule in rules:
+        #rule.pop(0)
+        ws2.append(rule)
     return wb
 
 def parse(kwargs):
@@ -411,7 +431,12 @@ def parse(kwargs):
         pout("Faild to write: {file}".format(file=fpath), verbose, Level.ERROR)
 
     # 6.3 Output Excel spreadsheet
-    wb = createWB(zlist, rules, verbose)
-    wb.save(conf['output']['tzdataxls'])
+    fpath = conf['output']['tzdataxls']
+    if os.path.exists(fpath) and not kwargs['overwrite']:
+        pout("{file} already exists. use '-o' to overwrite".format(file=fpath), verbose, Level.ERROR)
+    else:
+        pout("writing {file}".format(file=fpath), verbose, Level.INFO)
+        wb = createWB(zlist, rules, verbose)
+        wb.save(fpath)
 
     pass
