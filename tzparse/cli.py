@@ -63,7 +63,7 @@ from tzparse.version import __version__
 @click.option(
     '--xlsx', '-x',
     type=click.Path(exists=False, dir_okay=False, writable=True, resolve_path=True),
-    metavar='<rules>',
+    metavar='<tzxl>',
     help='timezone data xlsx output file'
     )
 @click.option(

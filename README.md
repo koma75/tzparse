@@ -58,7 +58,7 @@ Options:
   -c, --config <cfg>   Configuration File (default: config.yml)
   -z, --zones <zones>  zone csv output file
   -r, --rules <rules>  rule csv output file
-  -x, --xlsx <rules>   timezone data xlsx output file
+  -x, --xlsx <tzxl>    timezone data xlsx output file
   -o, --overwrite      overwrite output files (default: False)
   -v, --verbose        output in verbose mode
   --version            Show the version and exit.
