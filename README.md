@@ -91,4 +91,15 @@ earlier.
 TZDIR argument and the --config option is mandatory.
 Other options may be specified to change certain operations.
 
+Building an Executable
+------------------------------------------------------------------------
+
+Install pyinstaller and package the project.
+May want to use venv when executing the pyinstaller.
+
+~~~shell
+>. .venv/Scripts/activate
+
+~~~
+
 [IANA]:https://www.iana.org/time-zones
