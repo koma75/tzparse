@@ -135,3 +135,5 @@ zones.csv
 tzdata.xlsx
 tzdata-2020c
 tzdata-2020c.xlsx
+tzdata*/
+tzparse.exe
